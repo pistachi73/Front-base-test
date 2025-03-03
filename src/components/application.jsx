@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import generateRandomColor from '../lib/generate-random-color';
 import ColorSwatch from './color-swatch';
 import ExpensiveComponent from './expensive-component';
@@ -6,35 +6,50 @@ import GameInput from './game-input';
 import GameStatus from './game-status';
 
 const Application = () => {
-  const [colorGuess, setColorGuess] = useState('');
+  const formRef = useRef(null);
   const [correctAnswer, setCorrectAnswer] = useState(generateRandomColor());
   const [hasGuessed, setHasGuessed] = useState(false);
   const [isWinner, setIsWinner] = useState(false);
 
-  if (hasGuessed) {
-    if (correctAnswer === colorGuess) {
-      setIsWinner(true);
-    }
-  }
+  const handleSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+      const form = formRef.current;
+      if (!form) return;
+
+      const formData = new FormData(form);
+      const inputValue = formData.get('game-input') || '';
+
+      if (correctAnswer === inputValue) {
+        setIsWinner(true);
+      }
+      setHasGuessed(true);
+    },
+    [correctAnswer],
+  );
+
+  const handleReset = useCallback(() => {
+    setCorrectAnswer(generateRandomColor());
+    setHasGuessed(false);
+    setIsWinner(false);
+    formRef.current.reset();
+  }, []);
 
   return (
-    <main className="flex flex-col gap-8 mx-auto my-8 w-96">
+    <main className="mx-auto my-8 flex w-96 flex-col gap-8">
       <ColorSwatch color={correctAnswer} />
-      <GameInput
-        value={colorGuess}
-        onChange={(e) => setColorGuess(e.target.value)}
-        onSubmit={() => setHasGuessed(true)}
-        disabled={hasGuessed}
-      />
+      <form ref={formRef} className="flex items-end" onSubmit={handleSubmit}>
+        <GameInput disabled={hasGuessed} />
+        <button
+          className="whitespace-nowrap"
+          type="submit"
+          disabled={hasGuessed}
+        >
+          Take a Guess
+        </button>
+      </form>
       <GameStatus isWinner={isWinner} hasGuessed={hasGuessed} />
-      <button
-        onClick={() => {
-          setCorrectAnswer(generateRandomColor());
-          setHasGuessed(false);
-          setColorGuess('');
-        }}
-        type={hasGuessed ? 'submit' : 'button'}
-      >
+      <button onClick={handleReset} type={hasGuessed ? 'submit' : 'button'}>
         Reset Color
       </button>
       <ExpensiveComponent />
