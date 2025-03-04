@@ -26,7 +26,6 @@ Soluciones a los problemas previamente identificados.
 
 
 Mejoras a largo plazo y estimación de tiempos de tareas.
-- Test unitarios - 1 día.
 - Implementar una mejor solución para gestionar el estado (Context API, Redux, Zustand...) - 2 horas.
 - Usar herramienta para la validación del Form (zod) - 2 horas.
 - Mejorar la estructura del proyect - 30 minutos 
