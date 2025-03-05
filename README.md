@@ -10,7 +10,7 @@ Identificar errores y puntos de mejora de la aplicación.
 Identificar puntos de mejora de performance.
 -  La `generateRandomColor` genera un nuevo `shuffle` para cada carácter, lo que es ineficiente.
 - Al introducir un carácter en el input `GameInput`, se rerenderiza toda la aplicación cuando solo debería actualizarse el componente del input.
-- El componente `ExpensiveComponent` se rerenderiza innecesariamente con cada cambio de estado.
+- El componente `ExpensiveComponent` se rerenderiza innecesariamente.
 
 Metricas de la situación actual.
 
@@ -20,7 +20,7 @@ herramientas usadas.
 Soluciones a los problemas previamente identificados.
 - Hacer un único `shuffle` del array de carácteres hexadecimales y tomar los primeros 6 elementos para formar el color, en lugar de hacer un shuffle por cada carácter.
 - Usar uncontrolled input y coger su valor usando `FormData` API.
-- User `memo` para memorizar el componente `ExpensiveComponent`.
+- Extraer la lógica del juego a un componente separado para aislar los cambios de estado y evitar que `ExpensiveComponent` se rerenderice cuando el estado del juego cambia.
 - Eliminar dependencias que no se usan.
 - Instalar dependencias de testing + setup. Añadir test unitarios
 
